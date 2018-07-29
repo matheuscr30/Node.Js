@@ -2,19 +2,22 @@
 var app = require('./config/server');
 
 /* parametrizar a porta de escuta */
-var server = app.listen(3000, function(){
+var server = app.listen(3500, function(){
 	console.log('Servidor online');
 })
 
 var io = require('socket.io').listen(server);
 
-app.set('io', io);
-
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//Preflight Request
+app.use(function (req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "content-type");
+    res.setHeader("Access-Control-Allow-Credentials", true);
     next();
 });
+
+app.set('io', io);
 
 /* criar a conexão por websocket */
 io.on('connection', function(socket){
